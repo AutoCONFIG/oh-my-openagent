@@ -63,10 +63,10 @@ function parseJournal(value: unknown): MigrationJournal {
 
   const backupMoves: MigrationBackupMove[] = []
   for (const move of value["backupMoves"]) {
-    if (!isPlainObject(move) || typeof move["from"] !== "string" || typeof move["to"] !== "string") {
+    if (!isPlainObject(move) || typeof move.from !== "string" || typeof move.to !== "string") {
       throw new Error("Migration journal backup move is invalid")
     }
-    backupMoves.push({ from: move["from"], to: move["to"] })
+    backupMoves.push({ from: move.from, to: move.to })
   }
 
   return {

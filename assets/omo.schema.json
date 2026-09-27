@@ -727,6 +727,13 @@
               }
             ]
           },
+          "provider_options": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
           "variant": {
             "type": "string"
           },
@@ -12855,6 +12862,13 @@
                   }
                 ]
               },
+              "provider_options": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              },
               "variant": {
                 "type": "string"
               },
@@ -14787,6 +14801,13 @@
                   }
                 ]
               },
+              "provider_options": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              },
               "variant": {
                 "type": "string"
               },
@@ -16718,6 +16739,13 @@
                     "type": "string"
                   }
                 ]
+              },
+              "provider_options": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
               },
               "variant": {
                 "type": "string"
@@ -18656,6 +18684,13 @@
                       "type": "string"
                     }
                   ]
+                },
+                "provider_options": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
                 },
                 "variant": {
                   "type": "string"
@@ -30490,6 +30525,13 @@
                         }
                       ]
                     },
+                    "provider_options": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
                     "variant": {
                       "type": "string"
                     },
@@ -32422,6 +32464,13 @@
                         }
                       ]
                     },
+                    "provider_options": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
+                    },
                     "variant": {
                       "type": "string"
                     },
@@ -34353,6 +34402,13 @@
                           "type": "string"
                         }
                       ]
+                    },
+                    "provider_options": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
+                      "additionalProperties": {}
                     },
                     "variant": {
                       "type": "string"

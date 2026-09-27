@@ -19,6 +19,7 @@ const OmoAgentDefInputSchema = z.object({
   model: z.string().optional(),
   models: z.array(OmoAgentModelEntrySchema).optional(),
   reasoning: OmoReasoningSchema.optional(),
+  provider_options: z.record(z.string(), z.unknown()).optional(),
   /** @deprecated Use reasoning. */
   variant: z.string().optional(),
   /** @deprecated Use reasoning. */

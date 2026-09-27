@@ -20,6 +20,11 @@ import { writeInstalledCodexBinDir } from "./codex-installed-bin-dir"
 import { removeGitBashHooksOffWindows } from "./codex-git-bash-hooks"
 import { installAstGrepForCodex } from "./install-ast-grep-sg"
 import { trackCodexInstallTelemetry } from "./codex-install-telemetry"
+import {
+  getCodexAgentModelOverrides,
+  unknownCodexAgentModelOverrideWarnings,
+  type CodexAgentModelOverrideResult,
+} from "./codex-agent-model-overrides"
 import type { CodexInstallOptions, CodexInstallResult, CodexMarketplaceSource, InstalledPlugin, MarketplaceManifest } from "./types"
 
 const SISYPHUS_LEGACY_CACHE_MARKETPLACES = ["lazycodex", "code-yeongyu-codex-plugins"] as const
@@ -128,6 +133,14 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
   })
   const omoConfig = readDefaultRoleConfig({ cwd: projectDirectory, env })
   for (const warning of omoConfig.warnings) log(`Warning: ${warning}`)
+  const agentModelOverrides = loadOmoAgentModelOverridesForInstall({
+    cwd: projectDirectory,
+    env,
+    installed,
+    log,
+    marketplaceName: marketplace.name,
+    platform,
+  })
   for (const plugin of installed) {
     const pluginRoot = agentSourceRoots.get(plugin.name) ?? plugin.path
     const agentLinks = await linkCachedPluginAgents({
@@ -137,11 +150,18 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
       preservedReasoning,
       preservedServiceTier,
       defaultRoleEnabled: omoConfig.enabled,
+      agentModelOverrides: plugin.name === "omo" ? agentModelOverrides?.agents : undefined,
     })
     for (const link of agentLinks) {
       log(`Linked agent ${link.name} -> ${link.target}`)
       const agentName = agentNameFromToml(link.name)
       agentConfigs.set(agentName, { name: agentName, configFile: `./agents/${link.name}` })
+    }
+    if (plugin.name === "omo" && agentModelOverrides !== undefined) {
+      for (const warning of unknownCodexAgentModelOverrideWarnings({
+        configuredAgents: agentModelOverrides.agents.keys(),
+        managedAgentNames: new Set(agentLinks.map((link) => agentNameFromToml(link.name))),
+      })) log(`Warning: ${warning}`)
     }
   }
 
@@ -253,6 +273,28 @@ async function agentSourceRootsForInstall(input: {
 
 function legacyCacheMarketplaces(marketplaceName: string): readonly string[] {
   return marketplaceName === "sisyphuslabs" ? SISYPHUS_LEGACY_CACHE_MARKETPLACES : []
+}
+
+function loadOmoAgentModelOverridesForInstall(input: {
+  readonly cwd: string
+  readonly env: { readonly [key: string]: string | undefined }
+  readonly installed: readonly InstalledPlugin[]
+  readonly log: (message: string) => void
+  readonly marketplaceName: string
+  readonly platform: NodeJS.Platform
+}): CodexAgentModelOverrideResult | undefined {
+  if (input.marketplaceName !== "sisyphuslabs" || !input.installed.some((plugin) => plugin.name === "omo")) {
+    return undefined
+  }
+  try {
+    const result = getCodexAgentModelOverrides({ cwd: input.cwd, env: input.env, platform: input.platform })
+    for (const warning of result.warnings) input.log(`Warning: ${warning}`)
+    return result
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    input.log(`Warning: failed to load Codex agent model overrides: ${message}`)
+    return undefined
+  }
 }
 
 export function findRepoRootFromImporter(importerDir: string): string {

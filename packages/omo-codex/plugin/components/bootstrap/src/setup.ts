@@ -1,6 +1,7 @@
 import { copyFile, mkdir, readFile, readdir, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { readDefaultRoleConfig } from "../../../../src/install/codex-default-role-config.ts";
+import { getCodexAgentModelOverrides, unknownCodexAgentModelOverrideWarnings } from "../../../../src/install/codex-agent-model-overrides.ts";
 
 // These relative imports resolve at BUILD time in the monorepo; esbuild
 // inlines the installer source modules into dist/cli.js so PLUGIN_ROOT ships
@@ -96,13 +97,24 @@ async function linkBundledAgentsStep(options: WorkerSetupOptions): Promise<Agent
 		const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
 		const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
 		const config = readDefaultRoleConfig({ env: options.env });
+		const agentModelOverrides = loadBootstrapAgentModelOverrides(options);
 		const linked = await linkCachedPluginAgents({
 			codexHome: options.codexHome,
 			pluginRoot: stageRoot,
 			preservedReasoning,
 			preservedServiceTier,
 			defaultRoleEnabled: config.enabled,
+			agentModelOverrides: agentModelOverrides.agents,
 		});
+		for (const warning of [
+			...agentModelOverrides.warnings,
+			...unknownCodexAgentModelOverrideWarnings({
+				configuredAgents: agentModelOverrides.agents.keys(),
+				managedAgentNames: new Set(linked.map((link) => agentNameFromToml(link.name))),
+			}),
+		]) {
+			await appendBootstrapLog(options.pluginData, options.now ?? Date.now(), "agent-model-override-warning", { warning });
+		}
 		const agentConfigs = linked
 			.map((link) => ({ configFile: `./agents/${link.name}`, name: agentNameFromToml(link.name) }))
 			.sort((left, right) => left.name.localeCompare(right.name));
@@ -120,6 +132,17 @@ async function linkBundledAgentsStep(options: WorkerSetupOptions): Promise<Agent
 					reason: `failed to link bundled agents into ${agentsTarget}: ${errorMessage(error)}`,
 				},
 			],
+		};
+	}
+}
+
+function loadBootstrapAgentModelOverrides(options: WorkerSetupOptions): ReturnType<typeof getCodexAgentModelOverrides> {
+	try {
+		return getCodexAgentModelOverrides({ cwd: process.cwd(), env: options.env, platform: options.platform });
+	} catch (error) {
+		return {
+			agents: new Map(),
+			warnings: [`failed to load Codex agent model overrides: ${errorMessage(error)}`],
 		};
 	}
 }

@@ -1,9 +1,10 @@
-import { copyFile, lstat, mkdir, readdir, rm, writeFile } from "node:fs/promises"
+import { copyFile, lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises"
 import { basename, join } from "node:path"
 import type { PreservedAgentReasoning } from "./managed-agent-reasoning-defaults"
 import { restorePreservedReasoning, restorePreservedServiceTier } from "./preserved-agent-settings"
 import { purgeRetiredManagedAgentFiles } from "./retired-managed-agent-purge"
 import { installDefaultAgentRole } from "./default-agent-role"
+import { applyCodexAgentModelOverride, type CodexAgentModelOverride } from "./codex-agent-model-overrides"
 
 export { capturePreservedAgentReasoning, capturePreservedAgentServiceTier } from "./preserved-agent-settings"
 
@@ -24,6 +25,7 @@ export async function linkCachedPluginAgents(input: {
   readonly preservedReasoning?: ReadonlyMap<string, PreservedAgentReasoning>
   readonly preservedServiceTier?: ReadonlyMap<string, string | null>
   readonly defaultRoleEnabled?: boolean
+  readonly agentModelOverrides?: ReadonlyMap<string, CodexAgentModelOverride>
 }): Promise<readonly LinkedAgent[]> {
   const bundledAgents = await discoverBundledAgents(input.pluginRoot)
   await purgeRetiredManagedAgentFiles({ codexHome: input.codexHome })
@@ -50,11 +52,21 @@ export async function linkCachedPluginAgents(input: {
       preserved: input.preservedServiceTier?.has(agentName) ?? false,
       value: input.preservedServiceTier?.get(agentName) ?? null,
     })
+    const override = input.agentModelOverrides?.get(agentName)
+    if (override !== undefined) {
+      const content = await readFile(linkPath, "utf8")
+      await writeFile(linkPath, applyCodexAgentModelOverride(content, override))
+    }
     linked.push({ name: agentFileName, path: linkPath, target: agentPath })
   }
   const worker = linked.find((entry) => entry.name === "lazycodex-worker-medium.toml")
   if (worker !== undefined) {
-    const fallback = await installDefaultAgentRole({ codexHome: input.codexHome, worker, enabled: input.defaultRoleEnabled !== false })
+    const fallback = await installDefaultAgentRole({
+      codexHome: input.codexHome,
+      worker,
+      enabled: input.defaultRoleEnabled !== false,
+      modelOverride: input.agentModelOverrides?.get("default"),
+    })
     if (fallback !== null) linked.push(fallback)
   }
   await writeManifest(
