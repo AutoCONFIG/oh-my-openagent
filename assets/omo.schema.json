@@ -922,6 +922,15 @@
           "exclusiveMinimum": 0,
           "maximum": 9007199254740991
         },
+        "host_shard_prewarm": {
+          "default": "first-turn",
+          "type": "string",
+          "enum": [
+            "off",
+            "first-turn",
+            "session-start"
+          ]
+        },
         "default_concurrency": {
           "default": 5,
           "type": "integer",
@@ -963,7 +972,7 @@
           "maximum": 9007199254740991
         },
         "residency_max_children": {
-          "default": 8,
+          "default": "unlimited",
           "anyOf": [
             {
               "type": "integer",
@@ -1152,6 +1161,7 @@
         "default_execution_mode",
         "process_runner",
         "host_engine_policy",
+        "host_shard_prewarm",
         "default_concurrency",
         "global_concurrency",
         "max_depth",
@@ -2237,6 +2247,85 @@
         "enabled"
       ],
       "additionalProperties": false
+    },
+    "computer": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+        },
+        "display": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_width": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "max_height": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "screenshot_max_bytes": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "stop_hotkey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allow_host_relay_only_stop": {
+          "type": "boolean"
+        },
+        "macos_canary": {
+          "type": "string",
+          "enum": [
+            "session",
+            "off"
+          ]
+        },
+        "audit_log": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "screenshot_gc": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "stale_ms": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "scan_interval_ms": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "additionalProperties": false
+        },
+        "engine_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cua_adapter": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
     },
     "disabled_skills": {
       "type": "array",
@@ -13029,6 +13118,14 @@
               "exclusiveMinimum": 0,
               "maximum": 9007199254740991
             },
+            "host_shard_prewarm": {
+              "type": "string",
+              "enum": [
+                "off",
+                "first-turn",
+                "session-start"
+              ]
+            },
             "default_concurrency": {
               "type": "integer",
               "minimum": 0,
@@ -14077,6 +14174,85 @@
             }
           },
           "additionalProperties": false
+        },
+        "computer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+            },
+            "display": {
+              "type": "string",
+              "minLength": 1
+            },
+            "max_width": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "max_height": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "screenshot_max_bytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "stop_hotkey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "allow_host_relay_only_stop": {
+              "type": "boolean"
+            },
+            "macos_canary": {
+              "type": "string",
+              "enum": [
+                "session",
+                "off"
+              ]
+            },
+            "audit_log": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "screenshot_gc": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "stale_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scan_interval_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": false
+            },
+            "engine_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cua_adapter": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
         },
         "disabled_skills": {
           "type": "array",
@@ -14968,6 +15144,14 @@
               "exclusiveMinimum": 0,
               "maximum": 9007199254740991
             },
+            "host_shard_prewarm": {
+              "type": "string",
+              "enum": [
+                "off",
+                "first-turn",
+                "session-start"
+              ]
+            },
             "default_concurrency": {
               "type": "integer",
               "minimum": 0,
@@ -16016,6 +16200,85 @@
             }
           },
           "additionalProperties": false
+        },
+        "computer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+            },
+            "display": {
+              "type": "string",
+              "minLength": 1
+            },
+            "max_width": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "max_height": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "screenshot_max_bytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "stop_hotkey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "allow_host_relay_only_stop": {
+              "type": "boolean"
+            },
+            "macos_canary": {
+              "type": "string",
+              "enum": [
+                "session",
+                "off"
+              ]
+            },
+            "audit_log": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "screenshot_gc": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "stale_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scan_interval_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": false
+            },
+            "engine_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cua_adapter": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
         },
         "disabled_skills": {
           "type": "array",
@@ -16907,6 +17170,14 @@
               "exclusiveMinimum": 0,
               "maximum": 9007199254740991
             },
+            "host_shard_prewarm": {
+              "type": "string",
+              "enum": [
+                "off",
+                "first-turn",
+                "session-start"
+              ]
+            },
             "default_concurrency": {
               "type": "integer",
               "minimum": 0,
@@ -17955,6 +18226,85 @@
             }
           },
           "additionalProperties": false
+        },
+        "computer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+            },
+            "display": {
+              "type": "string",
+              "minLength": 1
+            },
+            "max_width": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "max_height": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "screenshot_max_bytes": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "stop_hotkey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "allow_host_relay_only_stop": {
+              "type": "boolean"
+            },
+            "macos_canary": {
+              "type": "string",
+              "enum": [
+                "session",
+                "off"
+              ]
+            },
+            "audit_log": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "screenshot_gc": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "stale_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "scan_interval_ms": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": false
+            },
+            "engine_path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cua_adapter": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
         },
         "disabled_skills": {
           "type": "array",
@@ -18851,6 +19201,14 @@
                 "type": "integer",
                 "exclusiveMinimum": 0,
                 "maximum": 9007199254740991
+              },
+              "host_shard_prewarm": {
+                "type": "string",
+                "enum": [
+                  "off",
+                  "first-turn",
+                  "session-start"
+                ]
               },
               "default_concurrency": {
                 "type": "integer",
@@ -19900,6 +20258,85 @@
               }
             },
             "additionalProperties": false
+          },
+          "computer": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+              },
+              "display": {
+                "type": "string",
+                "minLength": 1
+              },
+              "max_width": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "max_height": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "screenshot_max_bytes": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              "stop_hotkey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "allow_host_relay_only_stop": {
+                "type": "boolean"
+              },
+              "macos_canary": {
+                "type": "string",
+                "enum": [
+                  "session",
+                  "off"
+                ]
+              },
+              "audit_log": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "screenshot_gc": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "stale_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "scan_interval_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "additionalProperties": false
+              },
+              "engine_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "cua_adapter": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
           },
           "disabled_skills": {
             "type": "array",
@@ -30692,6 +31129,14 @@
                     "exclusiveMinimum": 0,
                     "maximum": 9007199254740991
                   },
+                  "host_shard_prewarm": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "first-turn",
+                      "session-start"
+                    ]
+                  },
                   "default_concurrency": {
                     "type": "integer",
                     "minimum": 0,
@@ -31740,6 +32185,85 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "computer": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+                  },
+                  "display": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "max_width": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max_height": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "screenshot_max_bytes": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "stop_hotkey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "allow_host_relay_only_stop": {
+                    "type": "boolean"
+                  },
+                  "macos_canary": {
+                    "type": "string",
+                    "enum": [
+                      "session",
+                      "off"
+                    ]
+                  },
+                  "audit_log": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "screenshot_gc": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      },
+                      "stale_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "scan_interval_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "engine_path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "cua_adapter": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
               },
               "disabled_skills": {
                 "type": "array",
@@ -32631,6 +33155,14 @@
                     "exclusiveMinimum": 0,
                     "maximum": 9007199254740991
                   },
+                  "host_shard_prewarm": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "first-turn",
+                      "session-start"
+                    ]
+                  },
                   "default_concurrency": {
                     "type": "integer",
                     "minimum": 0,
@@ -33679,6 +34211,85 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "computer": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+                  },
+                  "display": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "max_width": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max_height": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "screenshot_max_bytes": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "stop_hotkey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "allow_host_relay_only_stop": {
+                    "type": "boolean"
+                  },
+                  "macos_canary": {
+                    "type": "string",
+                    "enum": [
+                      "session",
+                      "off"
+                    ]
+                  },
+                  "audit_log": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "screenshot_gc": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      },
+                      "stale_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "scan_interval_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "engine_path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "cua_adapter": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
               },
               "disabled_skills": {
                 "type": "array",
@@ -34570,6 +35181,14 @@
                     "exclusiveMinimum": 0,
                     "maximum": 9007199254740991
                   },
+                  "host_shard_prewarm": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "first-turn",
+                      "session-start"
+                    ]
+                  },
                   "default_concurrency": {
                     "type": "integer",
                     "minimum": 0,
@@ -35618,6 +36237,85 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              "computer": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Experimental: register the computer tool in OmO Native sessions (default: on where the host is supported; false leaves it unregistered)"
+                  },
+                  "display": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "max_width": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "max_height": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "screenshot_max_bytes": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "stop_hotkey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "allow_host_relay_only_stop": {
+                    "type": "boolean"
+                  },
+                  "macos_canary": {
+                    "type": "string",
+                    "enum": [
+                      "session",
+                      "off"
+                    ]
+                  },
+                  "audit_log": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "screenshot_gc": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean"
+                      },
+                      "stale_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "scan_interval_ms": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "engine_path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "cua_adapter": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": false,
+                "description": "Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host."
               },
               "disabled_skills": {
                 "type": "array",

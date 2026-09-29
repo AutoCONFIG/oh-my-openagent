@@ -1,5 +1,4 @@
 import { join, resolve } from "node:path"
-import { readDefaultRoleConfig } from "./codex-default-role-config"
 import { existsSync } from "node:fs"
 import { homedir } from "node:os"
 import { installCachedPlugin, linkCachedPluginBins, linkRootRuntimeBin, pruneMarketplaceCache, pruneMarketplacePluginCaches } from "./codex-cache"
@@ -8,9 +7,9 @@ import { shouldBuildSourcePackages } from "./codex-package-layout"
 import { updateCodexConfig } from "./codex-config-toml"
 import { trustedHookStatesForPlugin } from "./codex-hook-trust"
 import { prepareGitBashForInstall, resolveGitBashForCurrentProcess } from "./git-bash"
-import { capturePreservedAgentReasoning, capturePreservedAgentServiceTier, linkCachedPluginAgents } from "./link-cached-plugin-agents"
+import { linkInstalledPluginAgents } from "./install-codex-agents"
 import { readMarketplace, readPluginManifest, resolvePluginSource, validatePathSegment } from "./codex-marketplace"
-import { writeInstalledMarketplaceSnapshot, type MarketplaceSnapshotPluginSource } from "./codex-marketplace-snapshot"
+import type { MarketplaceSnapshotPluginSource } from "./codex-marketplace-snapshot"
 import { readDistributionManifest, resolveLazyCodexPluginVersion, stampLazyCodexPluginVersion, writeLazyCodexInstallSnapshot } from "./lazycodex-version-stamp"
 import { defaultRunCommand } from "./codex-process"
 import { repairProjectLocalCodexArtifactsBestEffort } from "./codex-project-local-cleanup-best-effort"
@@ -20,12 +19,7 @@ import { writeInstalledCodexBinDir } from "./codex-installed-bin-dir"
 import { removeGitBashHooksOffWindows } from "./codex-git-bash-hooks"
 import { installAstGrepForCodex } from "./install-ast-grep-sg"
 import { trackCodexInstallTelemetry } from "./codex-install-telemetry"
-import {
-  getCodexAgentModelOverrides,
-  unknownCodexAgentModelOverrideWarnings,
-  type CodexAgentModelOverrideResult,
-} from "./codex-agent-model-overrides"
-import type { CodexInstallOptions, CodexInstallResult, CodexMarketplaceSource, InstalledPlugin, MarketplaceManifest } from "./types"
+import type { CodexInstallOptions, CodexInstallResult, CodexMarketplaceSource, InstalledPlugin } from "./types"
 
 const SISYPHUS_LEGACY_CACHE_MARKETPLACES = ["lazycodex", "code-yeongyu-codex-plugins"] as const
 
@@ -60,7 +54,6 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
 
   const installed: InstalledPlugin[] = []
   const pluginSources: MarketplaceSnapshotPluginSource[] = []
-  const agentConfigs = new Map<string, { readonly name: string; readonly configFile: string }>()
   for (const entry of marketplace.plugins) {
     const sourcePath = resolvePluginSource(codexPackageRoot, entry, { pathOverride: "./plugin" })
     const manifest = await readPluginManifest(sourcePath)
@@ -123,47 +116,16 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
     platform,
   })
 
-  const preservedReasoning = await capturePreservedAgentReasoning({ codexHome })
-  const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome })
-  const agentSourceRoots = await agentSourceRootsForInstall({
+  const agentConfigs = await linkInstalledPluginAgents({
     codexHome,
+    projectDirectory,
+    env,
+    platform,
+    log,
     marketplace,
     installed,
     pluginSources,
   })
-  const omoConfig = readDefaultRoleConfig({ cwd: projectDirectory, env })
-  for (const warning of omoConfig.warnings) log(`Warning: ${warning}`)
-  const agentModelOverrides = loadOmoAgentModelOverridesForInstall({
-    cwd: projectDirectory,
-    env,
-    installed,
-    log,
-    marketplaceName: marketplace.name,
-    platform,
-  })
-  for (const plugin of installed) {
-    const pluginRoot = agentSourceRoots.get(plugin.name) ?? plugin.path
-    const agentLinks = await linkCachedPluginAgents({
-      codexHome,
-      pluginRoot,
-      platform,
-      preservedReasoning,
-      preservedServiceTier,
-      defaultRoleEnabled: omoConfig.enabled,
-      agentModelOverrides: plugin.name === "omo" ? agentModelOverrides?.agents : undefined,
-    })
-    for (const link of agentLinks) {
-      log(`Linked agent ${link.name} -> ${link.target}`)
-      const agentName = agentNameFromToml(link.name)
-      agentConfigs.set(agentName, { name: agentName, configFile: `./agents/${link.name}` })
-    }
-    if (plugin.name === "omo" && agentModelOverrides !== undefined) {
-      for (const warning of unknownCodexAgentModelOverrideWarnings({
-        configuredAgents: agentModelOverrides.agents.keys(),
-        managedAgentNames: new Set(agentLinks.map((link) => agentNameFromToml(link.name))),
-      })) log(`Warning: ${warning}`)
-    }
-  }
 
   const trustedHookStates = (
     await Promise.all(
@@ -218,7 +180,7 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
     platform,
     gitBashEnabled: platform === "win32" && gitBashResolution.found,
     trustedHookStates,
-    agentConfigs: [...agentConfigs.values()].sort((left, right) => left.name.localeCompare(right.name)),
+    agentConfigs,
     autonomousPermissions: options.autonomousPermissions !== false,
     ...(options.reasoning === undefined ? {} : { reasoning: options.reasoning }),
   })
@@ -250,51 +212,8 @@ export async function runCodexInstaller(options: CodexInstallOptions = {}): Prom
 
 export { resolveCodexInstallerBinDir } from "./codex-installer-bin-dir"
 
-function agentNameFromToml(fileName: string): string {
-  return fileName.endsWith(".toml") ? fileName.slice(0, -".toml".length) : fileName
-}
-
-async function agentSourceRootsForInstall(input: {
-  readonly codexHome: string
-  readonly marketplace: MarketplaceManifest
-  readonly installed: readonly InstalledPlugin[]
-  readonly pluginSources: readonly MarketplaceSnapshotPluginSource[]
-}): Promise<ReadonlyMap<string, string>> {
-  if (input.marketplace.name !== "sisyphuslabs") {
-    return new Map(input.installed.map((plugin) => [plugin.name, plugin.path]))
-  }
-  const snapshotPlugins = await writeInstalledMarketplaceSnapshot({
-    codexHome: input.codexHome,
-    marketplace: input.marketplace,
-    plugins: input.pluginSources,
-  })
-  return new Map(snapshotPlugins.map((plugin) => [plugin.name, plugin.path]))
-}
-
 function legacyCacheMarketplaces(marketplaceName: string): readonly string[] {
   return marketplaceName === "sisyphuslabs" ? SISYPHUS_LEGACY_CACHE_MARKETPLACES : []
-}
-
-function loadOmoAgentModelOverridesForInstall(input: {
-  readonly cwd: string
-  readonly env: { readonly [key: string]: string | undefined }
-  readonly installed: readonly InstalledPlugin[]
-  readonly log: (message: string) => void
-  readonly marketplaceName: string
-  readonly platform: NodeJS.Platform
-}): CodexAgentModelOverrideResult | undefined {
-  if (input.marketplaceName !== "sisyphuslabs" || !input.installed.some((plugin) => plugin.name === "omo")) {
-    return undefined
-  }
-  try {
-    const result = getCodexAgentModelOverrides({ cwd: input.cwd, env: input.env, platform: input.platform })
-    for (const warning of result.warnings) input.log(`Warning: ${warning}`)
-    return result
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    input.log(`Warning: failed to load Codex agent model overrides: ${message}`)
-    return undefined
-  }
 }
 
 export function findRepoRootFromImporter(importerDir: string): string {
