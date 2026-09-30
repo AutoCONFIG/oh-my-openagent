@@ -42,31 +42,6 @@ describe("#given a bundled medium worker #when installing the fallback role", ()
     await linkCachedPluginAgents(input)
     expect(Bun.TOML.parse(await readFile(input.target, "utf8"))).toHaveProperty("model", "next-model")
   })
-  test("applies the configured model override before recording ownership", async () => {
-    const input = await fixture()
-    await linkCachedPluginAgents({
-      ...input,
-      agentModelOverrides: new Map([[
-        "default",
-        { model: "configured-model", modelReasoningEffort: "none", serviceTier: "flex" },
-      ]]),
-    })
-    expect(Bun.TOML.parse(await readFile(input.target, "utf8"))).toEqual({
-      name: "default",
-      model: "configured-model",
-      model_reasoning_effort: "none",
-      service_tier: "flex",
-      developer_instructions: "worker instructions",
-    })
-    await linkCachedPluginAgents({
-      ...input,
-      agentModelOverrides: new Map([[
-        "default",
-        { model: "configured-model", modelReasoningEffort: "none", serviceTier: "flex" },
-      ]]),
-    })
-    expect(Bun.TOML.parse(await readFile(input.target, "utf8"))).toHaveProperty("model", "configured-model")
-  })
   test("preserves a user's default and fails loudly", async () => {
     const input = await fixture()
     const custom = 'name = "default"\nmodel = "custom"\n'

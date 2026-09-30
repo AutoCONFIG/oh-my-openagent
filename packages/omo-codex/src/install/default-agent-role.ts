@@ -5,7 +5,6 @@ import { writeFileAtomic } from "./codex-config-atomic-write"
 import { hasForeignAgentRegistration } from "./codex-config-agents"
 import { parseAgentHeaderName, splitTomlSections } from "./codex-config-toml-sections"
 import type { LinkedAgent } from "./link-cached-plugin-agents"
-import { applyCodexAgentModelOverride, type CodexAgentModelOverride } from "./codex-agent-model-overrides"
 
 const REGISTRATION = { name: "default", configFile: "./agents/default.toml" }
 
@@ -15,7 +14,6 @@ export async function installDefaultAgentRole(input: {
   readonly codexHome: string
   readonly worker: LinkedAgent
   readonly enabled: boolean
-  readonly modelOverride?: CodexAgentModelOverride
 }): Promise<LinkedAgent | null> {
   const target = join(input.codexHome, "agents", "default.toml")
   const receipt = join(input.codexHome, "agents", ".lazycodex-default.sha256")
@@ -51,9 +49,8 @@ export async function installDefaultAgentRole(input: {
     throw new Error("Preserved user-owned agents.default / agents/default.toml. Move it aside to install the LazyCodex fallback, or set [codex].agents.default.disable = true in omo.jsonc. Explicit LazyCodex roles remain required.")
   }
   const worker = await readFile(input.worker.path, "utf8")
-  const derived = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"')
-  if (derived === worker) throw new Error("Cannot derive default: medium worker has no matching internal name")
-  const content = input.modelOverride === undefined ? derived : applyCodexAgentModelOverride(derived, input.modelOverride)
+  const content = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"')
+  if (content === worker) throw new Error("Cannot derive default: medium worker has no matching internal name")
   await writeFileAtomic(target, content)
   await writeFileAtomic(receipt, hash(content))
   return { name: "default.toml", path: target, target: input.worker.target }
