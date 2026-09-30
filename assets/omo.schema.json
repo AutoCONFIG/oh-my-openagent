@@ -805,6 +805,88 @@
           },
           "disable": {
             "type": "boolean"
+          },
+          "permission": {
+            "type": "object",
+            "properties": {
+              "edit": {
+                "type": "string",
+                "enum": [
+                  "ask",
+                  "allow",
+                  "deny"
+                ]
+              },
+              "bash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "webfetch": {
+                "type": "string",
+                "enum": [
+                  "ask",
+                  "allow",
+                  "deny"
+                ]
+              },
+              "task": {
+                "type": "string",
+                "enum": [
+                  "ask",
+                  "allow",
+                  "deny"
+                ]
+              },
+              "doom_loop": {
+                "type": "string",
+                "enum": [
+                  "ask",
+                  "allow",
+                  "deny"
+                ]
+              },
+              "external_directory": {
+                "type": "string",
+                "enum": [
+                  "ask",
+                  "allow",
+                  "deny"
+                ]
+              }
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "ask",
+                "allow",
+                "deny"
+              ]
+            }
+          },
+          "prompt_append": {
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -13029,6 +13111,88 @@
               },
               "disable": {
                 "type": "boolean"
+              },
+              "permission": {
+                "type": "object",
+                "properties": {
+                  "edit": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "bash": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "webfetch": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "task": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "doom_loop": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "external_directory": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  }
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "ask",
+                    "allow",
+                    "deny"
+                  ]
+                }
+              },
+              "prompt_append": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -15055,6 +15219,88 @@
               },
               "disable": {
                 "type": "boolean"
+              },
+              "permission": {
+                "type": "object",
+                "properties": {
+                  "edit": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "bash": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "webfetch": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "task": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "doom_loop": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "external_directory": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  }
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "ask",
+                    "allow",
+                    "deny"
+                  ]
+                }
+              },
+              "prompt_append": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -17081,6 +17327,88 @@
               },
               "disable": {
                 "type": "boolean"
+              },
+              "permission": {
+                "type": "object",
+                "properties": {
+                  "edit": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "bash": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "additionalProperties": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "webfetch": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "task": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "doom_loop": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  },
+                  "external_directory": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  }
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "ask",
+                    "allow",
+                    "deny"
+                  ]
+                }
+              },
+              "prompt_append": {
+                "type": "string"
               }
             },
             "additionalProperties": false
@@ -19113,6 +19441,88 @@
                 },
                 "disable": {
                   "type": "boolean"
+                },
+                "permission": {
+                  "type": "object",
+                  "properties": {
+                    "edit": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    },
+                    "bash": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "enum": [
+                              "ask",
+                              "allow",
+                              "deny"
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    "webfetch": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    },
+                    "task": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    },
+                    "doom_loop": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    },
+                    "external_directory": {
+                      "type": "string",
+                      "enum": [
+                        "ask",
+                        "allow",
+                        "deny"
+                      ]
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "enum": [
+                      "ask",
+                      "allow",
+                      "deny"
+                    ]
+                  }
+                },
+                "prompt_append": {
+                  "type": "string"
                 }
               },
               "additionalProperties": false
@@ -31040,6 +31450,88 @@
                     },
                     "disable": {
                       "type": "boolean"
+                    },
+                    "permission": {
+                      "type": "object",
+                      "properties": {
+                        "edit": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "bash": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "ask",
+                                "allow",
+                                "deny"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string"
+                              },
+                              "additionalProperties": {
+                                "type": "string",
+                                "enum": [
+                                  "ask",
+                                  "allow",
+                                  "deny"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "webfetch": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "task": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "doom_loop": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "external_directory": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "prompt_append": {
+                      "type": "string"
                     }
                   },
                   "additionalProperties": false
@@ -33066,6 +33558,88 @@
                     },
                     "disable": {
                       "type": "boolean"
+                    },
+                    "permission": {
+                      "type": "object",
+                      "properties": {
+                        "edit": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "bash": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "ask",
+                                "allow",
+                                "deny"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string"
+                              },
+                              "additionalProperties": {
+                                "type": "string",
+                                "enum": [
+                                  "ask",
+                                  "allow",
+                                  "deny"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "webfetch": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "task": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "doom_loop": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "external_directory": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "prompt_append": {
+                      "type": "string"
                     }
                   },
                   "additionalProperties": false
@@ -35092,6 +35666,88 @@
                     },
                     "disable": {
                       "type": "boolean"
+                    },
+                    "permission": {
+                      "type": "object",
+                      "properties": {
+                        "edit": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "bash": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "ask",
+                                "allow",
+                                "deny"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "propertyNames": {
+                                "type": "string"
+                              },
+                              "additionalProperties": {
+                                "type": "string",
+                                "enum": [
+                                  "ask",
+                                  "allow",
+                                  "deny"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "webfetch": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "task": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "doom_loop": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        },
+                        "external_directory": {
+                          "type": "string",
+                          "enum": [
+                            "ask",
+                            "allow",
+                            "deny"
+                          ]
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "enum": [
+                          "ask",
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "prompt_append": {
+                      "type": "string"
                     }
                   },
                   "additionalProperties": false

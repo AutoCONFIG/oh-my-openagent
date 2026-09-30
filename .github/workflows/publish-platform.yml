@@ -94,6 +94,7 @@ jobs:
 
       - name: Sign and notarize Darwin desktop engine
         if: startsWith(matrix.host, 'darwin-')
+        timeout-minutes: 75
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -537,6 +538,13 @@ jobs:
               ;;
           esac
         timeout-minutes: 20
+
+      - name: Smoke eval registration in fresh binary
+        if: steps.release-assets.outputs.binary_exists != 'true' && matrix.platform == 'darwin-arm64'
+        run: |
+          bun script/qa/omo-native-eval-smoke.mjs \
+            --binary .omo/release-binaries/omo-darwin-arm64
+        timeout-minutes: 5
 
       - name: Upload release binary artifact
         if: steps.release-assets.outputs.binary_exists != 'true'
